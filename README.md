@@ -96,3 +96,6 @@ If you find this work helpful, you can cite our paper as follows:
 
 ## Acknowledgement
 Our code is based on [guided-diffusion](https://github.com/openai/guided-diffusion) and [voxelmorph](https://github.com/voxelmorph/voxelmorph).
+
+## Contact
+For any questions, please contact <a href="mailto:szgong22@cse.cuhk.edu.hk">szgong22@cse.cuhk.edu.hk</a>
