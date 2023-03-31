@@ -122,7 +122,8 @@ def main():
             ):
                 data_size += len(sub_batch)
                 angle = np.random.rand() * 30. - 15.
-                sub_batch_rot = TF.rotate(sub_batch, angle)
+                #sub_batch_rot = TF.rotate(sub_batch, angle)
+                sub_batch_rot = sub_batch
                 with th.no_grad():
                     t_sample = th.ones(sub_batch.shape[0], dtype=th.long, device=dist_util.dev()) * 15
                     batch_noise = th.randn_like(sub_batch).cuda()
@@ -144,7 +145,7 @@ def main():
 
                 velocity_field = deform_model(th.cat([sub_batch_rot, noise_pred_con - noise_pred_uncon], dim=1))
                 deform_field = vecint(velocity_field)
-                deform_field = TF.rotate(deform_field, -angle)
+                #deform_field = TF.rotate(deform_field, -angle)
                 deform_grid = 2 * sub_landmarks[:, [0, 1, 2], :].unsqueeze(1).float() / 255 - 1
                 pred_deform = F.grid_sample(deform_field,
                                             deform_grid,
