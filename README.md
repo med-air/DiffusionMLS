@@ -85,13 +85,13 @@ python scripts/deformation_evaluate.py --val_data_dir datasets/data_eval.pkl --m
 
 # Pre-trained Checkpoint
 
-Our pretrained checkpoint can be downloaded through one-drive.
+Our pretrained checkpoint can be downloaded through one-drive.We provide three samples for testing the code.
 
 [Deformation network](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155187960_link_cuhk_edu_hk/EZ4DITujUkxKmSZblvi0ln0BjfUN21H-iaAmC3cG4MuXVQ?e=1DKKYv)
 
-[Conditional diffusion model](https://mycuhk-my.sharepoint.com/:u:/r/personal/1155187960_link_cuhk_edu_hk/Documents/public/DiffusionMLS/model_con.pt?csf=1&web=1&e=bqGLhd)
+[Conditional diffusion model](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155187960_link_cuhk_edu_hk/EQewW1cIG6FJu0kMVcaUBr8BdJxJdJwuXXLRAxtKDq0bMA?e=pLYMKt)
 
-[Unconditional diffusion model](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155187960_link_cuhk_edu_hk/EYTfnurtp7NEs6PJad7BcuQBFt3_QRMHPBlZO5I_stEE-g?e=QAd0jY)
+[Unconditional diffusion model](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155187960_link_cuhk_edu_hk/EYTfnurtp7NEs6PJad7BcuQBFt3_QRMHPBlZO5I_stEE-g?e=wcgc5I)
 
 ## Bibtex
 If you find this work helpful, you can cite our paper as follows:
