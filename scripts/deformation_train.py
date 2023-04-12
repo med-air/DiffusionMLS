@@ -1,6 +1,8 @@
 """
 Train a deformation network to quantify the brain midline shift.
 """
+import sys
+sys.path.append("../")
 import argparse
 import copy
 import torch as th

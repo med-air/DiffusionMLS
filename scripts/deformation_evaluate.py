@@ -1,13 +1,15 @@
 """
 Train a deformation network to quantify the brain midline shift.
 """
+import sys
+sys.path.append("../")
 import argparse
 import copy
 import torch as th
 import torch.distributed as dist
 from torch.optim import AdamW
 from guided_diffusion import dist_util, logger
-from guided_diffusion.image_datasets import load_data_slice_epoch, load_data_slice_lm
+from guided_diffusion.image_datasets import load_data_slice_epoch, load_data_slice_lm, load_data_volume
 from guided_diffusion.resample import create_named_schedule_sampler
 from guided_diffusion.script_util import (
     add_dict_to_argparser,
@@ -78,8 +80,13 @@ def main():
             class_cond=True,
             return_loader=True
         )
+        val_data_volume = load_data_volume(
+            data_dir = args.val_data_dir,
+            batch_size=1
+        )
     else:
         val_data = None
+        val_data_volume = None
 
     vecint = VecInt([args.image_size, args.image_size], 7).cuda()
     def validation_forward(data_loader):
@@ -108,9 +115,36 @@ def main():
                     error_detach += error.detach().cpu()
             logger.log("val_error: {}".format(error_detach / data_size))
         return error_detach / data_size
+    def validation_volume_forward(data_loader):
+        deform_model.eval()
+        with th.no_grad():
+            error_detach = 0
+            data_size = 0
+            for idx, (batch, extra) in enumerate(data_loader):
+                data_size += len(batch)
+                labels = extra.to(dist_util.dev())
+                batch = batch.to(dist_util.dev())
+                batch = batch.transpose(0, 1)[8 : batch.shape[1] - 5]
+                for i, (sub_batch, sub_labels) in enumerate(
+                        split_microbatches(args.microbatch, batch, labels)
+                ):
+                    t = th.tensor([300]).cuda()
+                    batch_noise = th.randn_like(sub_batch).cuda()
+                    batch_noisy = diffusion.q_sample(sub_batch.cuda(), t, noise=batch_noise)
+                    noise_pred_con = dif_model_con(batch_noisy, t)[:, :1].detach()
+                    noise_pred_uncon = dif_model_uncon(batch_noisy, t)[:, :1].detach()
+                    velocity_field = deform_model(th.cat([sub_batch, noise_pred_con - noise_pred_uncon], dim=1))
+                    deform_field = vecint(velocity_field)
+                    pred_mls = th.max(th.sqrt(deform_field[:, 0] ** 2 + deform_field[:, 1] ** 2))
+                    error = th.sum(th.abs(pred_mls - sub_labels))
+                    error_detach += error.detach().cpu()
+            logger.log("val_error: {}".format(error_detach / data_size))
+        return error_detach / data_size
 
     val_loss = validation_forward(val_data)
-    logger.log(("final val error: {}".format(val_loss)))
+    logger.log(("final slice-wise error : {}".format(val_loss)))
+    val_loss = validation_volume_forward(val_data_volume)
+    logger.log(("final volume-wise error: {}".format(val_loss)))
     dist.barrier()
 
 
@@ -130,10 +164,10 @@ def split_microbatches(microbatch, *args):
 
 def create_argparser():
     defaults = dict(
-        val_data_dir="",
-        model_path="",
-        model_con_path="",
-        model_uncon_path="",
+        val_data_dir="sample_data.pkl",
+        model_path="deformation_model.pt",
+        model_con_path="model_con.pt",
+        model_uncon_path="model_uncon.pt",
         noised=True,
         iterations=500000,
         lr=3e-4,

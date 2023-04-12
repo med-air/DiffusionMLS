@@ -83,6 +83,16 @@ DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear"
 python scripts/deformation_evaluate.py --val_data_dir datasets/data_eval.pkl --model_path path/to/deformation/checkpoint.pt --model_con_path models/model_con.pt --model_uncon_path models/model_uncon.pt $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
 ```
 
+# Pre-trained Checkpoint
+
+Our pretrained checkpoint can be downloaded through one-drive.
+
+[Deformation network](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155187960_link_cuhk_edu_hk/EZ4DITujUkxKmSZblvi0ln0BjfUN21H-iaAmC3cG4MuXVQ?e=1DKKYv)
+
+[Conditional diffusion model](https://mycuhk-my.sharepoint.com/:u:/r/personal/1155187960_link_cuhk_edu_hk/Documents/public/DiffusionMLS/model_con.pt?csf=1&web=1&e=bqGLhd)
+
+[Unconditional diffusion model](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155187960_link_cuhk_edu_hk/EYTfnurtp7NEs6PJad7BcuQBFt3_QRMHPBlZO5I_stEE-g?e=QAd0jY)
+
 ## Bibtex
 If you find this work helpful, you can cite our paper as follows:
 ```
